@@ -24,3 +24,6 @@ Thumbs.db
 
 # Terraform-generated output
 terraform/fileCreation/automate.txt
+
+# EC2 SSH keys - never commit
+terraform/ec2-automation/keys/

@@ -1173,6 +1173,56 @@ The next implementation stages will focus on production-oriented DevOps practice
 - Change management
 
 ---
+## Issue 8: SSH connection failed because the SSH server was unavailable
+
+### Problem
+
+The initial SSH connection to the simulated EC2 instance failed because the container did not have a functioning SSH daemon.
+
+### Investigation
+
+Checked whether the SSH server binary and package were present:
+
+```powershell
+docker exec CONTAINER_NAME rpm -q openssh-server
+docker exec CONTAINER_NAME ls -l /usr/sbin/sshd
+```
+
+### Resolution
+
+Installed OpenSSH, generated server host keys, created the runtime directory and started the SSH daemon.
+
+Verified the listening port:
+
+```powershell
+docker exec CONTAINER_NAME ss -tlnp
+```
+
+### Lesson learned
+
+An EC2 instance being reported as running does not guarantee that an SSH service is installed or listening.
+
+## Issue 9: SSH port mapping and container access
+
+### Problem
+
+The simulated instance was not directly accessible through its reported private or public IP from Windows.
+
+### Root cause
+
+Floci runs the simulated EC2 instance as a Docker container and publishes its SSH port on the Docker host.
+
+### Resolution
+
+Used the host port mapping `2200:22` and connected through localhost:
+
+```powershell
+ssh -4 -i .\terraform\ec2-automation\keys\floci-ec2-key -p 2200 root@127.0.0.1
+```
+
+### Lesson learned
+
+Docker port mapping determines how a service inside a container is reached from the host. A simulated EC2 public IP should not be treated as a real AWS network address.
 
 # 11. How to Run This Project
 
