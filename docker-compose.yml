@@ -1,0 +1,42 @@
+services:
+  floci:
+    image: floci/floci:latest
+    container_name: floci
+    ports:
+      - "4566:4566"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/app/data
+    environment:
+      FLOCI_STORAGE_MODE: hybrid
+      FLOCI_HOSTNAME: floci
+    restart: unless-stopped
+
+  jenkins:
+    image: jenkins/jenkins:lts-jdk21
+    container_name: jenkins
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    depends_on:
+      - floci
+
+  terraform:
+    image: hashicorp/terraform:latest
+    working_dir: /workspace
+    volumes:
+      - ./terraform:/workspace
+      - ./terraform-mirror:/terraform-mirror
+      - ./terraform.tfrc:/root/.terraformrc:ro
+    environment:
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_EC2_METADATA_DISABLED: "true"
+      AWS_PAGER: ""
+
+volumes:
+  jenkins_home:

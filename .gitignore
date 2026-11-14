@@ -1,0 +1,26 @@
+﻿# Terraform local files
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+
+# Local data and credentials
+data/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.tfvars
+
+# Provider binaries and mirror
+terraform-mirror/
+
+# Operating system files
+Thumbs.db
+.DS_Store
+
+# Terraform-generated output
+terraform/fileCreation/automate.txt

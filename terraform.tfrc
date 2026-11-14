@@ -1,0 +1,8 @@
+provider_installation {
+  filesystem_mirror {
+    path = "/terraform-mirror"
+    include = ["registry.terraform.io/hashicorp/aws"]
+  }
+
+  direct {}
+}
